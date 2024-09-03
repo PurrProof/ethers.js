@@ -1,7 +1,8 @@
-import { defineProperties, isError, assert, assertArgument, assertArgumentCount } from "../../utils/index.js";
+import { defineProperties, isError, assert, assertArgument, assertArgumentCount, } from "../../utils/index.js";
 import { Typed } from "../typed.js";
 import { Coder, Result, WordSize, Writer } from "./abstract-coder.js";
 import { AnonymousCoder } from "./anonymous.js";
+import { AbiWordAccumulator } from "../abi-accumulator.js";
 /**
  *  @_ignore
  */
@@ -10,7 +11,7 @@ export function pack(writer, coders, values) {
     if (Array.isArray(values)) {
         arrayValues = values;
     }
-    else if (values && typeof (values) === "object") {
+    else if (values && typeof values === "object") {
         let unique = {};
         arrayValues = coders.map((coder) => {
             const name = coder.localName;
@@ -45,7 +46,9 @@ export function pack(writer, coders, values) {
         }
     });
     // Backfill all the dynamic offsets, now that we know the static length
-    updateFuncs.forEach((func) => { func(staticWriter.length); });
+    updateFuncs.forEach((func) => {
+        func(staticWriter.length);
+    });
     let length = writer.appendWriter(staticWriter);
     length += writer.appendWriter(dynamicWriter);
     return length;
@@ -60,9 +63,11 @@ export function unpack(reader, coders) {
     let baseReader = reader.subReader(0);
     coders.forEach((coder) => {
         let value = null;
+        AbiWordAccumulator.getInstance().pushContext(coder);
         if (coder.dynamic) {
             let offset = reader.readIndex();
             let offsetReader = baseReader.subReader(offset);
+            AbiWordAccumulator.getInstance().offset(offset);
             try {
                 value = coder.decode(offsetReader);
             }
@@ -92,6 +97,7 @@ export function unpack(reader, coders) {
                 value.type = coder.type;
             }
         }
+        AbiWordAccumulator.getInstance().popContext();
         if (value == undefined) {
             throw new Error("investigate");
         }
@@ -107,8 +113,8 @@ export class ArrayCoder extends Coder {
     coder;
     length;
     constructor(coder, length, localName) {
-        const type = (coder.type + "[" + (length >= 0 ? length : "") + "]");
-        const dynamic = (length === -1 || coder.dynamic);
+        const type = coder.type + "[" + (length >= 0 ? length : "") + "]";
+        const dynamic = length === -1 || coder.dynamic;
         super("array", type, localName, dynamic);
         defineProperties(this, { coder, length });
     }
@@ -131,7 +137,7 @@ export class ArrayCoder extends Coder {
             count = value.length;
             writer.writeValue(value.length);
         }
-        assertArgumentCount(value.length, count, "coder array" + (this.localName ? (" " + this.localName) : ""));
+        assertArgumentCount(value.length, count, "coder array" + (this.localName ? " " + this.localName : ""));
         let coders = [];
         for (let i = 0; i < value.length; i++) {
             coders.push(this.coder);
@@ -147,7 +153,11 @@ export class ArrayCoder extends Coder {
             // slot requires at least 32 bytes for their value (or 32
             // bytes as a link to the data). This could use a much
             // tighter bound, but we are erroring on the side of safety.
-            assert(count * WordSize <= reader.dataLength, "insufficient data length", "BUFFER_OVERRUN", { buffer: reader.bytes, offset: count * WordSize, length: reader.dataLength });
+            assert(count * WordSize <= reader.dataLength, "insufficient data length", "BUFFER_OVERRUN", {
+                buffer: reader.bytes,
+                offset: count * WordSize,
+                length: reader.dataLength,
+            });
         }
         let coders = [];
         for (let i = 0; i < count; i++) {

@@ -10,8 +10,9 @@
  *
  *  @_section api/abi/abi-coder:ABI Encoding
  */
-import { Result } from "./coders/abstract-coder.js";
+import { Coder, Result } from "./coders/abstract-coder.js";
 import { ParamType } from "./fragments.js";
+import type { AbiWordOffsetMap } from "./abi-accumulator.js";
 import type { BytesLike, CallExceptionAction, CallExceptionError } from "../utils/index.js";
 /**
  *  The **AbiCoder** is a low-level class responsible for encoding JavaScript
@@ -40,6 +41,10 @@ export declare class AbiCoder {
      *  padded event data emitted from ``external`` functions.
      */
     decode(types: ReadonlyArray<string | ParamType>, data: BytesLike, loose?: boolean): Result;
+    getAccumulatedAbiWords(): {
+        words: AbiWordOffsetMap;
+        coders: Coder[];
+    };
     static _setDefaultMaxInflation(value: number): void;
     /**
      *  Returns the shared singleton instance of a default [[AbiCoder]].

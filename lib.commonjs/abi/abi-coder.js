@@ -26,6 +26,7 @@ const number_js_1 = require("./coders/number.js");
 const string_js_1 = require("./coders/string.js");
 const tuple_js_1 = require("./coders/tuple.js");
 const fragments_js_1 = require("./fragments.js");
+const abi_accumulator_js_1 = require("./abi-accumulator.js");
 const index_js_2 = require("../address/index.js");
 const index_js_3 = require("../utils/index.js");
 // https://docs.soliditylang.org/en/v0.8.17/control-structures.html
@@ -67,7 +68,7 @@ function getBuiltinCallException(action, tx, data, abiCoder) {
                 revert = {
                     signature: "Error(string)",
                     name: "Error",
-                    args: [reason]
+                    args: [reason],
                 };
                 message += `: ${JSON.stringify(reason)}`;
             }
@@ -82,7 +83,7 @@ function getBuiltinCallException(action, tx, data, abiCoder) {
                 revert = {
                     signature: "Panic(uint256)",
                     name: "Panic",
-                    args: [code]
+                    args: [code],
                 };
                 reason = `Panic due to ${PanicReasons.get(code) || "UNKNOWN"}(${code})`;
                 message += `: ${reason}`;
@@ -96,14 +97,19 @@ function getBuiltinCallException(action, tx, data, abiCoder) {
         }
     }
     const transaction = {
-        to: (tx.to ? (0, index_js_2.getAddress)(tx.to) : null),
-        data: (tx.data || "0x")
+        to: tx.to ? (0, index_js_2.getAddress)(tx.to) : null,
+        data: tx.data || "0x",
     };
     if (tx.from) {
         transaction.from = (0, index_js_2.getAddress)(tx.from);
     }
     return (0, index_js_3.makeError)(message, "CALL_EXCEPTION", {
-        action, data, reason, transaction, invocation, revert
+        action,
+        data,
+        reason,
+        transaction,
+        invocation,
+        revert,
     });
 }
 /**
@@ -134,8 +140,8 @@ class AbiCoder {
         let match = param.type.match(paramTypeNumber);
         if (match) {
             let size = parseInt(match[2] || "256");
-            (0, index_js_1.assertArgument)(size !== 0 && size <= 256 && (size % 8) === 0, "invalid " + match[1] + " bit length", "param", param);
-            return new number_js_1.NumberCoder(size / 8, (match[1] === "int"), param.name);
+            (0, index_js_1.assertArgument)(size !== 0 && size <= 256 && size % 8 === 0, "invalid " + match[1] + " bit length", "param", param);
+            return new number_js_1.NumberCoder(size / 8, match[1] === "int", param.name);
         }
         // bytes[0-9]+
         match = param.type.match(paramTypeBytes);
@@ -165,7 +171,7 @@ class AbiCoder {
     encode(types, values) {
         (0, index_js_1.assertArgumentCount)(values.length, types.length, "types/values length mismatch");
         const coders = types.map((type) => this.#getCoder(fragments_js_1.ParamType.from(type)));
-        const coder = (new tuple_js_1.TupleCoder(coders, "_"));
+        const coder = new tuple_js_1.TupleCoder(coders, "_");
         const writer = new abstract_coder_js_1.Writer();
         coder.encode(writer, values);
         return writer.data;
@@ -178,12 +184,17 @@ class AbiCoder {
      *  padded event data emitted from ``external`` functions.
      */
     decode(types, data, loose) {
+        abi_accumulator_js_1.AbiWordAccumulator.getInstance().clear();
         const coders = types.map((type) => this.#getCoder(fragments_js_1.ParamType.from(type)));
         const coder = new tuple_js_1.TupleCoder(coders, "_");
         return coder.decode(new abstract_coder_js_1.Reader(data, loose, defaultMaxInflation));
     }
+    getAccumulatedAbiWords() {
+        const instance = abi_accumulator_js_1.AbiWordAccumulator.getInstance();
+        return { words: instance.words, coders: instance.coders };
+    }
     static _setDefaultMaxInflation(value) {
-        (0, index_js_1.assertArgument)(typeof (value) === "number" && Number.isInteger(value), "invalid defaultMaxInflation factor", "value", value);
+        (0, index_js_1.assertArgument)(typeof value === "number" && Number.isInteger(value), "invalid defaultMaxInflation factor", "value", value);
         defaultMaxInflation = value;
     }
     /**

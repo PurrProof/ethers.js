@@ -2651,6 +2651,75 @@ function uuidV4(randomBytes) {
     ].join("-");
 }
 
+class AbiWordAccumulator {
+    static #instance = null;
+    #words = new Map();
+    #coders = [];
+    #contexts = [];
+    // private constructor to prevent direct instantiation
+    constructor() {
+    }
+    clear() {
+        this.#words = new Map();
+        this.#coders = [];
+        this.#contexts = [];
+    }
+    static getInstance() {
+        if (AbiWordAccumulator.#instance === null) {
+            AbiWordAccumulator.#instance = new AbiWordAccumulator();
+        }
+        return AbiWordAccumulator.#instance;
+    }
+    pushContext(coder) {
+        const coderId = this.#coders.push(coder) - 1;
+        const curContext = this.curContext();
+        if (curContext === null) {
+            this.#contexts.push({ offset: 0, coderIds: [coderId] });
+        }
+        else {
+            const newCoderIds = [...curContext.coderIds, coderId];
+            this.#contexts.push({ offset: curContext.offset, coderIds: newCoderIds });
+        }
+    }
+    offset(offset) {
+        const curContext = this.curContext();
+        if (curContext === null) {
+            throw Error("Can't offset without context");
+        }
+        curContext.offset += offset;
+    }
+    curContext() {
+        return this.#contexts.length
+            ? this.#contexts[this.#contexts.length - 1]
+            : null;
+    }
+    popContext() {
+        const context = this.#contexts.pop();
+        if (context === undefined) {
+            throw Error("Can't pop context");
+        }
+        return context;
+    }
+    upsertWord(offset, data, isIndex) {
+        const curContext = this.curContext();
+        const newOffset = curContext ? curContext.offset + offset : offset;
+        const coderIds = curContext ? curContext.coderIds : [];
+        const word = {
+            data,
+            isIndex: isIndex ?? this.#words.get(newOffset)?.isIndex,
+            coders: coderIds, // current context coders
+        };
+        this.#words.set(newOffset, word);
+    }
+    get coders() {
+        return this.#coders;
+    }
+    get words() {
+        // convert the words map to an array, sort by keys (offsets), and then convert back to a map
+        return new Map(Array.from(this.#words.entries()).sort((a, b) => a[0] - b[0]));
+    }
+}
+
 /**
  * @_ignore:
  */
@@ -2726,14 +2795,16 @@ class Result extends Array {
         // Can't just pass in ...items since an array of length 1
         // is a special case in the super.
         super(items.length);
-        items.forEach((item, index) => { this[index] = item; });
+        items.forEach((item, index) => {
+            this[index] = item;
+        });
         // Find all unique keys
         const nameCounts = names.reduce((accum, name) => {
-            if (typeof (name) === "string") {
+            if (typeof name === "string") {
                 accum.set(name, (accum.get(name) || 0) + 1);
             }
             return accum;
-        }, (new Map()));
+        }, new Map());
         // Remove any key thats not unique
         setNames(this, Object.freeze(items.map((item, index) => {
             const name = names[index];
@@ -2745,7 +2816,7 @@ class Result extends Array {
         // Dummy operations to prevent TypeScript from complaining
         this.#names = [];
         if (this.#names == null) {
-            void (this.#names);
+            void this.#names;
         }
         if (!wrap) {
             return;
@@ -2755,7 +2826,7 @@ class Result extends Array {
         // Proxy indices and names so we can trap deferred errors
         const proxy = new Proxy(this, {
             get: (target, prop, receiver) => {
-                if (typeof (prop) === "string") {
+                if (typeof prop === "string") {
                     // Index accessor
                     if (prop.match(/^[0-9]+$/)) {
                         const index = getNumber(prop, "%index");
@@ -2777,16 +2848,18 @@ class Result extends Array {
                         // Make sure functions work with private variables
                         // See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy#no_private_property_forwarding
                         return function (...args) {
-                            return value.apply((this === receiver) ? target : this, args);
+                            return value.apply(this === receiver ? target : this, args);
                         };
                     }
                     else if (!(prop in target)) {
                         // Possible name accessor
-                        return target.getValue.apply((this === receiver) ? target : this, [prop]);
+                        return target.getValue.apply(this === receiver ? target : this, [
+                            prop,
+                        ]);
                     }
                 }
                 return Reflect.get(target, prop, receiver);
-            }
+            },
         });
         setNames(proxy, getNames(this));
         return proxy;
@@ -2823,7 +2896,7 @@ class Result extends Array {
         const names = getNames(this);
         return names.reduce((accum, name, index) => {
             assert(name != null, `value at index ${index} unnamed`, "UNSUPPORTED_OPERATION", {
-                operation: "toObject()"
+                operation: "toObject()",
             });
             return toObject(names, this, deep);
         }, {});
@@ -2956,7 +3029,11 @@ function checkResultErrors(result) {
 }
 function getValue$1(value) {
     let bytes = toBeArray(value);
-    assert(bytes.length <= WordSize, "value out-of-bounds", "BUFFER_OVERRUN", { buffer: bytes, length: WordSize, offset: bytes.length });
+    assert(bytes.length <= WordSize, "value out-of-bounds", "BUFFER_OVERRUN", {
+        buffer: bytes,
+        length: WordSize,
+        offset: bytes.length,
+    });
     if (bytes.length !== WordSize) {
         bytes = getBytesCopy(concat([Padding.slice(bytes.length % WordSize), bytes]));
     }
@@ -2981,7 +3058,10 @@ class Coder {
     dynamic;
     constructor(name, type, localName, dynamic) {
         defineProperties(this, { name, type, localName, dynamic }, {
-            name: "string", type: "string", localName: "string", dynamic: "boolean"
+            name: "string",
+            type: "string",
+            localName: "string",
+            dynamic: "boolean",
         });
     }
     _throwError(message, value) {
@@ -3002,7 +3082,9 @@ class Writer {
     get data() {
         return concat(this.#data);
     }
-    get length() { return this.#dataLength; }
+    get length() {
+        return this.#dataLength;
+    }
     #writeData(data) {
         this.#data.push(data);
         this.#dataLength += data.length;
@@ -3054,38 +3136,51 @@ class Reader {
         this.#data = getBytesCopy(data);
         this.#bytesRead = 0;
         this.#parent = null;
-        this.#maxInflation = (maxInflation != null) ? maxInflation : 1024;
+        this.#maxInflation = maxInflation != null ? maxInflation : 1024;
         this.#offset = 0;
     }
-    get data() { return hexlify(this.#data); }
-    get dataLength() { return this.#data.length; }
-    get consumed() { return this.#offset; }
-    get bytes() { return new Uint8Array(this.#data); }
+    get data() {
+        return hexlify(this.#data);
+    }
+    get dataLength() {
+        return this.#data.length;
+    }
+    get consumed() {
+        return this.#offset;
+    }
+    get bytes() {
+        return new Uint8Array(this.#data);
+    }
     #incrementBytesRead(count) {
         if (this.#parent) {
             return this.#parent.#incrementBytesRead(count);
         }
         this.#bytesRead += count;
         // Check for excessive inflation (see: #4537)
-        assert(this.#maxInflation < 1 || this.#bytesRead <= this.#maxInflation * this.dataLength, `compressed ABI data exceeds inflation ratio of ${this.#maxInflation} ( see: https:/\/github.com/ethers-io/ethers.js/issues/4537 )`, "BUFFER_OVERRUN", {
-            buffer: getBytesCopy(this.#data), offset: this.#offset,
-            length: count, info: {
+        assert(this.#maxInflation < 1 ||
+            this.#bytesRead <= this.#maxInflation * this.dataLength, `compressed ABI data exceeds inflation ratio of ${this.#maxInflation} ( see: https:/\/github.com/ethers-io/ethers.js/issues/4537 )`, "BUFFER_OVERRUN", {
+            buffer: getBytesCopy(this.#data),
+            offset: this.#offset,
+            length: count,
+            info: {
                 bytesRead: this.#bytesRead,
-                dataLength: this.dataLength
-            }
+                dataLength: this.dataLength,
+            },
         });
     }
     #peekBytes(offset, length, loose) {
         let alignedLength = Math.ceil(length / WordSize) * WordSize;
         if (this.#offset + alignedLength > this.#data.length) {
-            if (this.allowLoose && loose && this.#offset + length <= this.#data.length) {
+            if (this.allowLoose &&
+                loose &&
+                this.#offset + length <= this.#data.length) {
                 alignedLength = length;
             }
             else {
                 assert(false, "data out-of-bounds", "BUFFER_OVERRUN", {
                     buffer: getBytesCopy(this.#data),
                     length: this.#data.length,
-                    offset: this.#offset + alignedLength
+                    offset: this.#offset + alignedLength,
                 });
             }
         }
@@ -3100,6 +3195,8 @@ class Reader {
     // Read bytes
     readBytes(length, loose) {
         let bytes = this.#peekBytes(0, length, !!loose);
+        // upsert word; index flag, if set before, will be kept
+        AbiWordAccumulator.getInstance().upsertWord(this.#offset, bytes);
         this.#incrementBytesRead(length);
         this.#offset += bytes.length;
         // @TODO: Make sure the length..end bytes are all 0?
@@ -3110,6 +3207,8 @@ class Reader {
         return toBigInt(this.readBytes(WordSize));
     }
     readIndex() {
+        // insert empty word with index flag set to true
+        AbiWordAccumulator.getInstance().upsertWord(this.#offset, new Uint8Array(), true);
         return toNumber(this.readBytes(WordSize));
     }
 }
@@ -8087,7 +8186,7 @@ function pack(writer, coders, values) {
     if (Array.isArray(values)) {
         arrayValues = values;
     }
-    else if (values && typeof (values) === "object") {
+    else if (values && typeof values === "object") {
         let unique = {};
         arrayValues = coders.map((coder) => {
             const name = coder.localName;
@@ -8122,7 +8221,9 @@ function pack(writer, coders, values) {
         }
     });
     // Backfill all the dynamic offsets, now that we know the static length
-    updateFuncs.forEach((func) => { func(staticWriter.length); });
+    updateFuncs.forEach((func) => {
+        func(staticWriter.length);
+    });
     let length = writer.appendWriter(staticWriter);
     length += writer.appendWriter(dynamicWriter);
     return length;
@@ -8137,9 +8238,11 @@ function unpack(reader, coders) {
     let baseReader = reader.subReader(0);
     coders.forEach((coder) => {
         let value = null;
+        AbiWordAccumulator.getInstance().pushContext(coder);
         if (coder.dynamic) {
             let offset = reader.readIndex();
             let offsetReader = baseReader.subReader(offset);
+            AbiWordAccumulator.getInstance().offset(offset);
             try {
                 value = coder.decode(offsetReader);
             }
@@ -8169,6 +8272,7 @@ function unpack(reader, coders) {
                 value.type = coder.type;
             }
         }
+        AbiWordAccumulator.getInstance().popContext();
         if (value == undefined) {
             throw new Error("investigate");
         }
@@ -8184,8 +8288,8 @@ class ArrayCoder extends Coder {
     coder;
     length;
     constructor(coder, length, localName) {
-        const type = (coder.type + "[" + (length >= 0 ? length : "") + "]");
-        const dynamic = (length === -1 || coder.dynamic);
+        const type = coder.type + "[" + (length >= 0 ? length : "") + "]";
+        const dynamic = length === -1 || coder.dynamic;
         super("array", type, localName, dynamic);
         defineProperties(this, { coder, length });
     }
@@ -8208,7 +8312,7 @@ class ArrayCoder extends Coder {
             count = value.length;
             writer.writeValue(value.length);
         }
-        assertArgumentCount(value.length, count, "coder array" + (this.localName ? (" " + this.localName) : ""));
+        assertArgumentCount(value.length, count, "coder array" + (this.localName ? " " + this.localName : ""));
         let coders = [];
         for (let i = 0; i < value.length; i++) {
             coders.push(this.coder);
@@ -8224,7 +8328,11 @@ class ArrayCoder extends Coder {
             // slot requires at least 32 bytes for their value (or 32
             // bytes as a link to the data). This could use a much
             // tighter bound, but we are erroring on the side of safety.
-            assert(count * WordSize <= reader.dataLength, "insufficient data length", "BUFFER_OVERRUN", { buffer: reader.bytes, offset: count * WordSize, length: reader.dataLength });
+            assert(count * WordSize <= reader.dataLength, "insufficient data length", "BUFFER_OVERRUN", {
+                buffer: reader.bytes,
+                offset: count * WordSize,
+                length: reader.dataLength,
+            });
         }
         let coders = [];
         for (let i = 0; i < count; i++) {
@@ -12679,7 +12787,7 @@ function getBuiltinCallException(action, tx, data, abiCoder) {
                 revert = {
                     signature: "Error(string)",
                     name: "Error",
-                    args: [reason]
+                    args: [reason],
                 };
                 message += `: ${JSON.stringify(reason)}`;
             }
@@ -12694,7 +12802,7 @@ function getBuiltinCallException(action, tx, data, abiCoder) {
                 revert = {
                     signature: "Panic(uint256)",
                     name: "Panic",
-                    args: [code]
+                    args: [code],
                 };
                 reason = `Panic due to ${PanicReasons$1.get(code) || "UNKNOWN"}(${code})`;
                 message += `: ${reason}`;
@@ -12708,14 +12816,19 @@ function getBuiltinCallException(action, tx, data, abiCoder) {
         }
     }
     const transaction = {
-        to: (tx.to ? getAddress(tx.to) : null),
-        data: (tx.data || "0x")
+        to: tx.to ? getAddress(tx.to) : null,
+        data: tx.data || "0x",
     };
     if (tx.from) {
         transaction.from = getAddress(tx.from);
     }
     return makeError(message, "CALL_EXCEPTION", {
-        action, data, reason, transaction, invocation, revert
+        action,
+        data,
+        reason,
+        transaction,
+        invocation,
+        revert,
     });
 }
 /**
@@ -12746,8 +12859,8 @@ class AbiCoder {
         let match = param.type.match(paramTypeNumber);
         if (match) {
             let size = parseInt(match[2] || "256");
-            assertArgument(size !== 0 && size <= 256 && (size % 8) === 0, "invalid " + match[1] + " bit length", "param", param);
-            return new NumberCoder(size / 8, (match[1] === "int"), param.name);
+            assertArgument(size !== 0 && size <= 256 && size % 8 === 0, "invalid " + match[1] + " bit length", "param", param);
+            return new NumberCoder(size / 8, match[1] === "int", param.name);
         }
         // bytes[0-9]+
         match = param.type.match(paramTypeBytes);
@@ -12777,7 +12890,7 @@ class AbiCoder {
     encode(types, values) {
         assertArgumentCount(values.length, types.length, "types/values length mismatch");
         const coders = types.map((type) => this.#getCoder(ParamType.from(type)));
-        const coder = (new TupleCoder(coders, "_"));
+        const coder = new TupleCoder(coders, "_");
         const writer = new Writer();
         coder.encode(writer, values);
         return writer.data;
@@ -12790,12 +12903,17 @@ class AbiCoder {
      *  padded event data emitted from ``external`` functions.
      */
     decode(types, data, loose) {
+        AbiWordAccumulator.getInstance().clear();
         const coders = types.map((type) => this.#getCoder(ParamType.from(type)));
         const coder = new TupleCoder(coders, "_");
         return coder.decode(new Reader(data, loose, defaultMaxInflation));
     }
+    getAccumulatedAbiWords() {
+        const instance = AbiWordAccumulator.getInstance();
+        return { words: instance.words, coders: instance.coders };
+    }
     static _setDefaultMaxInflation(value) {
-        assertArgument(typeof (value) === "number" && Number.isInteger(value), "invalid defaultMaxInflation factor", "value", value);
+        assertArgument(typeof value === "number" && Number.isInteger(value), "invalid defaultMaxInflation factor", "value", value);
         defaultMaxInflation = value;
     }
     /**
