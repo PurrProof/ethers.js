@@ -625,7 +625,10 @@ export class Reader {
     let bytes = this.#peekBytes(0, length, !!loose);
 
     // upsert word; index flag, if set before, will be kept
-    AbiWordAccumulator.getInstance().upsertWord(this.#offset, bytes);
+    // one case of length=0 is when bytes.ts-coder reads 0-length bytes variable
+    if (length != 0) {
+      AbiWordAccumulator.getInstance().upsertWord(this.#offset, bytes);
+    }
 
     this.#incrementBytesRead(length);
     this.#offset += bytes.length;
