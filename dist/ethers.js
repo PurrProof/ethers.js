@@ -25645,14 +25645,20 @@ var ethers = /*#__PURE__*/Object.freeze({
     AbiCoder: AbiCoder,
     AbstractProvider: AbstractProvider,
     AbstractSigner: AbstractSigner,
+    AddressCoder: AddressCoder,
     AlchemyProvider: AlchemyProvider,
     AnkrProvider: AnkrProvider,
+    AnonymousCoder: AnonymousCoder,
+    ArrayCoder: ArrayCoder,
     BaseContract: BaseContract,
     BaseWallet: BaseWallet,
     Block: Block,
+    BooleanCoder: BooleanCoder,
     BrowserProvider: BrowserProvider,
+    BytesCoder: BytesCoder,
     ChainstackProvider: ChainstackProvider,
     CloudflareProvider: CloudflareProvider,
+    Coder: Coder,
     ConstructorFragment: ConstructorFragment,
     Contract: Contract,
     ContractEventPayload: ContractEventPayload,
@@ -25678,6 +25684,7 @@ var ethers = /*#__PURE__*/Object.freeze({
     FetchRequest: FetchRequest,
     FetchResponse: FetchResponse,
     FetchUrlFeeDataNetworkPlugin: FetchUrlFeeDataNetworkPlugin,
+    FixedBytesCoder: FixedBytesCoder,
     FixedNumber: FixedNumber,
     Fragment: Fragment,
     FunctionFragment: FunctionFragment,
@@ -25706,6 +25713,8 @@ var ethers = /*#__PURE__*/Object.freeze({
     Network: Network,
     NetworkPlugin: NetworkPlugin,
     NonceManager: NonceManager,
+    NullCoder: NullCoder,
+    NumberCoder: NumberCoder,
     ParamType: ParamType,
     PocketProvider: PocketProvider,
     QuickNodeProvider: QuickNodeProvider,
@@ -25717,11 +25726,13 @@ var ethers = /*#__PURE__*/Object.freeze({
     SocketPendingSubscriber: SocketPendingSubscriber,
     SocketProvider: SocketProvider,
     SocketSubscriber: SocketSubscriber,
+    StringCoder: StringCoder,
     StructFragment: StructFragment,
     Transaction: Transaction,
     TransactionDescription: TransactionDescription,
     TransactionReceipt: TransactionReceipt,
     TransactionResponse: TransactionResponse,
+    TupleCoder: TupleCoder,
     Typed: Typed,
     TypedDataEncoder: TypedDataEncoder,
     UndecodedEventLog: UndecodedEventLog,
@@ -25833,5 +25844,5 @@ var ethers = /*#__PURE__*/Object.freeze({
     zeroPadValue: zeroPadValue
 });
 
-export { AbiCoder, AbstractProvider, AbstractSigner, AlchemyProvider, AnkrProvider, BaseContract, BaseWallet, Block, BrowserProvider, ChainstackProvider, CloudflareProvider, ConstructorFragment, Contract, ContractEventPayload, ContractFactory, ContractTransactionReceipt, ContractTransactionResponse, ContractUnknownEventPayload, EnsPlugin, EnsResolver, ErrorDescription, ErrorFragment, EtherSymbol, EtherscanPlugin, EtherscanProvider, EventFragment, EventLog, EventPayload, FallbackFragment, FallbackProvider, FeeData, FeeDataNetworkPlugin, FetchCancelSignal, FetchRequest, FetchResponse, FetchUrlFeeDataNetworkPlugin, FixedNumber, Fragment, FunctionFragment, GasCostPlugin, HDNodeVoidWallet, HDNodeWallet, Indexed, InfuraProvider, InfuraWebSocketProvider, Interface, IpcSocketProvider, JsonRpcApiProvider, JsonRpcProvider, JsonRpcSigner, LangEn, Log, LogDescription, MaxInt256, MaxUint256, MessagePrefix, MinInt256, Mnemonic, MulticoinProviderPlugin, N$1 as N, NamedFragment, Network, NetworkPlugin, NonceManager, ParamType, PocketProvider, QuickNodeProvider, Result, Signature, SigningKey, SocketBlockSubscriber, SocketEventSubscriber, SocketPendingSubscriber, SocketProvider, SocketSubscriber, StructFragment, Transaction, TransactionDescription, TransactionReceipt, TransactionResponse, Typed, TypedDataEncoder, UndecodedEventLog, UnmanagedSubscriber, Utf8ErrorFuncs, VoidSigner, Wallet, WebSocketProvider, WeiPerEther, Wordlist, WordlistOwl, WordlistOwlA, ZeroAddress, ZeroHash, accessListify, assert, assertArgument, assertArgumentCount, assertNormalize, assertPrivate, checkResultErrors, computeAddress, computeHmac, concat, copyRequest, dataLength, dataSlice, decodeBase58, decodeBase64, decodeBytes32String, decodeRlp, decryptCrowdsaleJson, decryptKeystoreJson, decryptKeystoreJsonSync, defaultPath, defineProperties, dnsEncode, encodeBase58, encodeBase64, encodeBytes32String, encodeRlp, encryptKeystoreJson, encryptKeystoreJsonSync, ensNormalize, ethers, formatEther, formatUnits, fromTwos, getAccountPath, getAddress, getBigInt, getBytes, getBytesCopy, getCreate2Address, getCreateAddress, getDefaultProvider, getIcapAddress, getIndexedAccountPath, getNumber, getUint, hashMessage, hexlify, id, isAddress, isAddressable, isBytesLike, isCallException, isCrowdsaleJson, isError, isHexString, isKeystoreJson, isValidName, keccak256, lock, makeError, mask, namehash, parseEther, parseUnits$1 as parseUnits, pbkdf2, randomBytes, recoverAddress, resolveAddress, resolveProperties, ripemd160, scrypt, scryptSync, sha256, sha512, showThrottleMessage, solidityPacked, solidityPackedKeccak256, solidityPackedSha256, stripZerosLeft, toBeArray, toBeHex, toBigInt, toNumber, toQuantity, toTwos, toUtf8Bytes, toUtf8CodePoints, toUtf8String, uuidV4, verifyMessage, verifyTypedData, version, wordlists, zeroPadBytes, zeroPadValue };
+export { AbiCoder, AbstractProvider, AbstractSigner, AddressCoder, AlchemyProvider, AnkrProvider, AnonymousCoder, ArrayCoder, BaseContract, BaseWallet, Block, BooleanCoder, BrowserProvider, BytesCoder, ChainstackProvider, CloudflareProvider, Coder, ConstructorFragment, Contract, ContractEventPayload, ContractFactory, ContractTransactionReceipt, ContractTransactionResponse, ContractUnknownEventPayload, EnsPlugin, EnsResolver, ErrorDescription, ErrorFragment, EtherSymbol, EtherscanPlugin, EtherscanProvider, EventFragment, EventLog, EventPayload, FallbackFragment, FallbackProvider, FeeData, FeeDataNetworkPlugin, FetchCancelSignal, FetchRequest, FetchResponse, FetchUrlFeeDataNetworkPlugin, FixedBytesCoder, FixedNumber, Fragment, FunctionFragment, GasCostPlugin, HDNodeVoidWallet, HDNodeWallet, Indexed, InfuraProvider, InfuraWebSocketProvider, Interface, IpcSocketProvider, JsonRpcApiProvider, JsonRpcProvider, JsonRpcSigner, LangEn, Log, LogDescription, MaxInt256, MaxUint256, MessagePrefix, MinInt256, Mnemonic, MulticoinProviderPlugin, N$1 as N, NamedFragment, Network, NetworkPlugin, NonceManager, NullCoder, NumberCoder, ParamType, PocketProvider, QuickNodeProvider, Result, Signature, SigningKey, SocketBlockSubscriber, SocketEventSubscriber, SocketPendingSubscriber, SocketProvider, SocketSubscriber, StringCoder, StructFragment, Transaction, TransactionDescription, TransactionReceipt, TransactionResponse, TupleCoder, Typed, TypedDataEncoder, UndecodedEventLog, UnmanagedSubscriber, Utf8ErrorFuncs, VoidSigner, Wallet, WebSocketProvider, WeiPerEther, Wordlist, WordlistOwl, WordlistOwlA, ZeroAddress, ZeroHash, accessListify, assert, assertArgument, assertArgumentCount, assertNormalize, assertPrivate, checkResultErrors, computeAddress, computeHmac, concat, copyRequest, dataLength, dataSlice, decodeBase58, decodeBase64, decodeBytes32String, decodeRlp, decryptCrowdsaleJson, decryptKeystoreJson, decryptKeystoreJsonSync, defaultPath, defineProperties, dnsEncode, encodeBase58, encodeBase64, encodeBytes32String, encodeRlp, encryptKeystoreJson, encryptKeystoreJsonSync, ensNormalize, ethers, formatEther, formatUnits, fromTwos, getAccountPath, getAddress, getBigInt, getBytes, getBytesCopy, getCreate2Address, getCreateAddress, getDefaultProvider, getIcapAddress, getIndexedAccountPath, getNumber, getUint, hashMessage, hexlify, id, isAddress, isAddressable, isBytesLike, isCallException, isCrowdsaleJson, isError, isHexString, isKeystoreJson, isValidName, keccak256, lock, makeError, mask, namehash, parseEther, parseUnits$1 as parseUnits, pbkdf2, randomBytes, recoverAddress, resolveAddress, resolveProperties, ripemd160, scrypt, scryptSync, sha256, sha512, showThrottleMessage, solidityPacked, solidityPackedKeccak256, solidityPackedSha256, stripZerosLeft, toBeArray, toBeHex, toBigInt, toNumber, toQuantity, toTwos, toUtf8Bytes, toUtf8CodePoints, toUtf8String, uuidV4, verifyMessage, verifyTypedData, version, wordlists, zeroPadBytes, zeroPadValue };
 //# sourceMappingURL=ethers.js.map

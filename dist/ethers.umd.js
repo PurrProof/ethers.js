@@ -25651,14 +25651,20 @@ const __$G = (typeof globalThis !== 'undefined' ? globalThis: typeof window !== 
         AbiCoder: AbiCoder,
         AbstractProvider: AbstractProvider,
         AbstractSigner: AbstractSigner,
+        AddressCoder: AddressCoder,
         AlchemyProvider: AlchemyProvider,
         AnkrProvider: AnkrProvider,
+        AnonymousCoder: AnonymousCoder,
+        ArrayCoder: ArrayCoder,
         BaseContract: BaseContract,
         BaseWallet: BaseWallet,
         Block: Block,
+        BooleanCoder: BooleanCoder,
         BrowserProvider: BrowserProvider,
+        BytesCoder: BytesCoder,
         ChainstackProvider: ChainstackProvider,
         CloudflareProvider: CloudflareProvider,
+        Coder: Coder,
         ConstructorFragment: ConstructorFragment,
         Contract: Contract,
         ContractEventPayload: ContractEventPayload,
@@ -25684,6 +25690,7 @@ const __$G = (typeof globalThis !== 'undefined' ? globalThis: typeof window !== 
         FetchRequest: FetchRequest,
         FetchResponse: FetchResponse,
         FetchUrlFeeDataNetworkPlugin: FetchUrlFeeDataNetworkPlugin,
+        FixedBytesCoder: FixedBytesCoder,
         FixedNumber: FixedNumber,
         Fragment: Fragment,
         FunctionFragment: FunctionFragment,
@@ -25712,6 +25719,8 @@ const __$G = (typeof globalThis !== 'undefined' ? globalThis: typeof window !== 
         Network: Network,
         NetworkPlugin: NetworkPlugin,
         NonceManager: NonceManager,
+        NullCoder: NullCoder,
+        NumberCoder: NumberCoder,
         ParamType: ParamType,
         PocketProvider: PocketProvider,
         QuickNodeProvider: QuickNodeProvider,
@@ -25723,11 +25732,13 @@ const __$G = (typeof globalThis !== 'undefined' ? globalThis: typeof window !== 
         SocketPendingSubscriber: SocketPendingSubscriber,
         SocketProvider: SocketProvider,
         SocketSubscriber: SocketSubscriber,
+        StringCoder: StringCoder,
         StructFragment: StructFragment,
         Transaction: Transaction,
         TransactionDescription: TransactionDescription,
         TransactionReceipt: TransactionReceipt,
         TransactionResponse: TransactionResponse,
+        TupleCoder: TupleCoder,
         Typed: Typed,
         TypedDataEncoder: TypedDataEncoder,
         UndecodedEventLog: UndecodedEventLog,
@@ -25842,14 +25853,20 @@ const __$G = (typeof globalThis !== 'undefined' ? globalThis: typeof window !== 
     exports.AbiCoder = AbiCoder;
     exports.AbstractProvider = AbstractProvider;
     exports.AbstractSigner = AbstractSigner;
+    exports.AddressCoder = AddressCoder;
     exports.AlchemyProvider = AlchemyProvider;
     exports.AnkrProvider = AnkrProvider;
+    exports.AnonymousCoder = AnonymousCoder;
+    exports.ArrayCoder = ArrayCoder;
     exports.BaseContract = BaseContract;
     exports.BaseWallet = BaseWallet;
     exports.Block = Block;
+    exports.BooleanCoder = BooleanCoder;
     exports.BrowserProvider = BrowserProvider;
+    exports.BytesCoder = BytesCoder;
     exports.ChainstackProvider = ChainstackProvider;
     exports.CloudflareProvider = CloudflareProvider;
+    exports.Coder = Coder;
     exports.ConstructorFragment = ConstructorFragment;
     exports.Contract = Contract;
     exports.ContractEventPayload = ContractEventPayload;
@@ -25875,6 +25892,7 @@ const __$G = (typeof globalThis !== 'undefined' ? globalThis: typeof window !== 
     exports.FetchRequest = FetchRequest;
     exports.FetchResponse = FetchResponse;
     exports.FetchUrlFeeDataNetworkPlugin = FetchUrlFeeDataNetworkPlugin;
+    exports.FixedBytesCoder = FixedBytesCoder;
     exports.FixedNumber = FixedNumber;
     exports.Fragment = Fragment;
     exports.FunctionFragment = FunctionFragment;
@@ -25903,6 +25921,8 @@ const __$G = (typeof globalThis !== 'undefined' ? globalThis: typeof window !== 
     exports.Network = Network;
     exports.NetworkPlugin = NetworkPlugin;
     exports.NonceManager = NonceManager;
+    exports.NullCoder = NullCoder;
+    exports.NumberCoder = NumberCoder;
     exports.ParamType = ParamType;
     exports.PocketProvider = PocketProvider;
     exports.QuickNodeProvider = QuickNodeProvider;
@@ -25914,11 +25934,13 @@ const __$G = (typeof globalThis !== 'undefined' ? globalThis: typeof window !== 
     exports.SocketPendingSubscriber = SocketPendingSubscriber;
     exports.SocketProvider = SocketProvider;
     exports.SocketSubscriber = SocketSubscriber;
+    exports.StringCoder = StringCoder;
     exports.StructFragment = StructFragment;
     exports.Transaction = Transaction;
     exports.TransactionDescription = TransactionDescription;
     exports.TransactionReceipt = TransactionReceipt;
     exports.TransactionResponse = TransactionResponse;
+    exports.TupleCoder = TupleCoder;
     exports.Typed = Typed;
     exports.TypedDataEncoder = TypedDataEncoder;
     exports.UndecodedEventLog = UndecodedEventLog;
