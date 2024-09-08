@@ -14,5 +14,5 @@ export { decodeBytes32String, encodeBytes32String } from "./bytes32.js";
 export { ConstructorFragment, ErrorFragment, EventFragment, FallbackFragment, Fragment, FunctionFragment, NamedFragment, ParamType, StructFragment, } from "./fragments.js";
 export { checkResultErrors, Indexed, Interface, ErrorDescription, LogDescription, TransactionDescription, Result, } from "./interface.js";
 export { Typed } from "./typed.js";
-export { Coder, AddressCoder, AnonymousCoder, ArrayCoder, BooleanCoder, BytesCoder, FixedBytesCoder, NullCoder, NumberCoder, StringCoder, TupleCoder, } from "./coders";
+export { Coder, AddressCoder, AnonymousCoder, ArrayCoder, BooleanCoder, BytesCoder, FixedBytesCoder, NullCoder, NumberCoder, StringCoder, TupleCoder, } from "./coders/index.js";
 //# sourceMappingURL=index.js.map

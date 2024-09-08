@@ -37,16 +37,16 @@ Object.defineProperty(exports, "TransactionDescription", { enumerable: true, get
 Object.defineProperty(exports, "Result", { enumerable: true, get: function () { return interface_js_1.Result; } });
 var typed_js_1 = require("./typed.js");
 Object.defineProperty(exports, "Typed", { enumerable: true, get: function () { return typed_js_1.Typed; } });
-var coders_1 = require("./coders");
-Object.defineProperty(exports, "Coder", { enumerable: true, get: function () { return coders_1.Coder; } });
-Object.defineProperty(exports, "AddressCoder", { enumerable: true, get: function () { return coders_1.AddressCoder; } });
-Object.defineProperty(exports, "AnonymousCoder", { enumerable: true, get: function () { return coders_1.AnonymousCoder; } });
-Object.defineProperty(exports, "ArrayCoder", { enumerable: true, get: function () { return coders_1.ArrayCoder; } });
-Object.defineProperty(exports, "BooleanCoder", { enumerable: true, get: function () { return coders_1.BooleanCoder; } });
-Object.defineProperty(exports, "BytesCoder", { enumerable: true, get: function () { return coders_1.BytesCoder; } });
-Object.defineProperty(exports, "FixedBytesCoder", { enumerable: true, get: function () { return coders_1.FixedBytesCoder; } });
-Object.defineProperty(exports, "NullCoder", { enumerable: true, get: function () { return coders_1.NullCoder; } });
-Object.defineProperty(exports, "NumberCoder", { enumerable: true, get: function () { return coders_1.NumberCoder; } });
-Object.defineProperty(exports, "StringCoder", { enumerable: true, get: function () { return coders_1.StringCoder; } });
-Object.defineProperty(exports, "TupleCoder", { enumerable: true, get: function () { return coders_1.TupleCoder; } });
+var index_js_1 = require("./coders/index.js");
+Object.defineProperty(exports, "Coder", { enumerable: true, get: function () { return index_js_1.Coder; } });
+Object.defineProperty(exports, "AddressCoder", { enumerable: true, get: function () { return index_js_1.AddressCoder; } });
+Object.defineProperty(exports, "AnonymousCoder", { enumerable: true, get: function () { return index_js_1.AnonymousCoder; } });
+Object.defineProperty(exports, "ArrayCoder", { enumerable: true, get: function () { return index_js_1.ArrayCoder; } });
+Object.defineProperty(exports, "BooleanCoder", { enumerable: true, get: function () { return index_js_1.BooleanCoder; } });
+Object.defineProperty(exports, "BytesCoder", { enumerable: true, get: function () { return index_js_1.BytesCoder; } });
+Object.defineProperty(exports, "FixedBytesCoder", { enumerable: true, get: function () { return index_js_1.FixedBytesCoder; } });
+Object.defineProperty(exports, "NullCoder", { enumerable: true, get: function () { return index_js_1.NullCoder; } });
+Object.defineProperty(exports, "NumberCoder", { enumerable: true, get: function () { return index_js_1.NumberCoder; } });
+Object.defineProperty(exports, "StringCoder", { enumerable: true, get: function () { return index_js_1.StringCoder; } });
+Object.defineProperty(exports, "TupleCoder", { enumerable: true, get: function () { return index_js_1.TupleCoder; } });
 //# sourceMappingURL=index.js.map

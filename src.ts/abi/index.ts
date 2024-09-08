@@ -61,4 +61,4 @@ export {
   NumberCoder,
   StringCoder,
   TupleCoder,
-} from "./coders";
+} from "./coders/index.js";
