@@ -10,7 +10,7 @@
  *  @_navTitle: ABI
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Typed = exports.Result = exports.TransactionDescription = exports.LogDescription = exports.ErrorDescription = exports.Interface = exports.Indexed = exports.checkResultErrors = exports.StructFragment = exports.ParamType = exports.NamedFragment = exports.FunctionFragment = exports.Fragment = exports.FallbackFragment = exports.EventFragment = exports.ErrorFragment = exports.ConstructorFragment = exports.encodeBytes32String = exports.decodeBytes32String = exports.AbiCoder = void 0;
+exports.TupleCoder = exports.StringCoder = exports.NumberCoder = exports.NullCoder = exports.FixedBytesCoder = exports.BytesCoder = exports.BooleanCoder = exports.ArrayCoder = exports.AnonymousCoder = exports.AddressCoder = exports.Coder = exports.Typed = exports.Result = exports.TransactionDescription = exports.LogDescription = exports.ErrorDescription = exports.Interface = exports.Indexed = exports.checkResultErrors = exports.StructFragment = exports.ParamType = exports.NamedFragment = exports.FunctionFragment = exports.Fragment = exports.FallbackFragment = exports.EventFragment = exports.ErrorFragment = exports.ConstructorFragment = exports.encodeBytes32String = exports.decodeBytes32String = exports.AbiCoder = void 0;
 //////
 var abi_coder_js_1 = require("./abi-coder.js");
 Object.defineProperty(exports, "AbiCoder", { enumerable: true, get: function () { return abi_coder_js_1.AbiCoder; } });
@@ -37,4 +37,16 @@ Object.defineProperty(exports, "TransactionDescription", { enumerable: true, get
 Object.defineProperty(exports, "Result", { enumerable: true, get: function () { return interface_js_1.Result; } });
 var typed_js_1 = require("./typed.js");
 Object.defineProperty(exports, "Typed", { enumerable: true, get: function () { return typed_js_1.Typed; } });
+var coders_1 = require("./coders");
+Object.defineProperty(exports, "Coder", { enumerable: true, get: function () { return coders_1.Coder; } });
+Object.defineProperty(exports, "AddressCoder", { enumerable: true, get: function () { return coders_1.AddressCoder; } });
+Object.defineProperty(exports, "AnonymousCoder", { enumerable: true, get: function () { return coders_1.AnonymousCoder; } });
+Object.defineProperty(exports, "ArrayCoder", { enumerable: true, get: function () { return coders_1.ArrayCoder; } });
+Object.defineProperty(exports, "BooleanCoder", { enumerable: true, get: function () { return coders_1.BooleanCoder; } });
+Object.defineProperty(exports, "BytesCoder", { enumerable: true, get: function () { return coders_1.BytesCoder; } });
+Object.defineProperty(exports, "FixedBytesCoder", { enumerable: true, get: function () { return coders_1.FixedBytesCoder; } });
+Object.defineProperty(exports, "NullCoder", { enumerable: true, get: function () { return coders_1.NullCoder; } });
+Object.defineProperty(exports, "NumberCoder", { enumerable: true, get: function () { return coders_1.NumberCoder; } });
+Object.defineProperty(exports, "StringCoder", { enumerable: true, get: function () { return coders_1.StringCoder; } });
+Object.defineProperty(exports, "TupleCoder", { enumerable: true, get: function () { return coders_1.TupleCoder; } });
 //# sourceMappingURL=index.js.map
