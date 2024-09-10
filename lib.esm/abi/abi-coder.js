@@ -23,7 +23,7 @@ import { NumberCoder } from "./coders/number.js";
 import { StringCoder } from "./coders/string.js";
 import { TupleCoder } from "./coders/tuple.js";
 import { ParamType } from "./fragments.js";
-import { AbiWordAccumulator } from "./abi-accumulator.js";
+import { AbiWordAccumulator, } from "./abi-accumulator.js";
 import { getAddress } from "../address/index.js";
 import { getBytes, hexlify, makeError } from "../utils/index.js";
 // https://docs.soliditylang.org/en/v0.8.17/control-structures.html
@@ -188,7 +188,11 @@ export class AbiCoder {
     }
     getAccumulatedAbiWords() {
         const instance = AbiWordAccumulator.getInstance();
-        return { words: instance.words, coders: instance.coders };
+        return {
+            words: instance.words,
+            coders: instance.coders,
+            codersTree: instance.codersTree,
+        };
     }
     static _setDefaultMaxInflation(value) {
         assertArgument(typeof value === "number" && Number.isInteger(value), "invalid defaultMaxInflation factor", "value", value);

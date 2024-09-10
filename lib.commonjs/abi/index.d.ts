@@ -16,4 +16,5 @@ export { Typed } from "./typed.js";
 export type { JsonFragment, JsonFragmentType, FormatType, FragmentType, ParamTypeWalkAsyncFunc, ParamTypeWalkFunc, } from "./fragments.js";
 export type { InterfaceAbi } from "./interface.js";
 export { Coder, AddressCoder, AnonymousCoder, ArrayCoder, BooleanCoder, BytesCoder, FixedBytesCoder, NullCoder, NumberCoder, StringCoder, TupleCoder, } from "./coders/index.js";
+export { AbiCodersTreeNode, AbiWord, AbiWordAccumulator, AbiWordOffsetMap, } from "./abi-accumulator.js";
 //# sourceMappingURL=index.d.ts.map

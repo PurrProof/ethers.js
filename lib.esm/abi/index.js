@@ -15,4 +15,5 @@ export { ConstructorFragment, ErrorFragment, EventFragment, FallbackFragment, Fr
 export { checkResultErrors, Indexed, Interface, ErrorDescription, LogDescription, TransactionDescription, Result, } from "./interface.js";
 export { Typed } from "./typed.js";
 export { Coder, AddressCoder, AnonymousCoder, ArrayCoder, BooleanCoder, BytesCoder, FixedBytesCoder, NullCoder, NumberCoder, StringCoder, TupleCoder, } from "./coders/index.js";
+export { AbiCodersTreeNode, AbiWordAccumulator, } from "./abi-accumulator.js";
 //# sourceMappingURL=index.js.map

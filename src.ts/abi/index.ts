@@ -62,3 +62,10 @@ export {
   StringCoder,
   TupleCoder,
 } from "./coders/index.js";
+
+export {
+  AbiCodersTreeNode,
+  AbiWord,
+  AbiWordAccumulator,
+  AbiWordOffsetMap,
+} from "./abi-accumulator.js";

@@ -1,20 +1,38 @@
 import { Coder } from "./coders/abstract-coder.js";
 
-interface AbiWord {
+export class AbiCodersTreeNode {
+  public parent: AbiCodersTreeNode | null;
+  public children: AbiCodersTreeNode[] = [];
+  public coderId: number;
+
+  constructor(parent: AbiCodersTreeNode | null, coderId: number) {
+    this.parent = parent;
+    this.coderId = coderId;
+    if (this.parent) {
+      this.parent.children.push(this);
+    }
+  }
+}
+
+export interface AbiWord {
   data: Uint8Array;
   isIndex?: boolean;
   coders: number[];
 }
+
 export type AbiWordOffsetMap = Map<number, AbiWord>;
 interface AbiContext {
   offset: number;
-  coderIds: number[];
+  coderNode: AbiCodersTreeNode; // current context's coder node
+  coderIds: number[]; // sequence of coders from root context to this one
 }
+
 export class AbiWordAccumulator {
   static #instance: AbiWordAccumulator | null = null;
   #words: AbiWordOffsetMap = new Map<number, AbiWord>();
   #coders: Coder[] = [];
   #contexts: AbiContext[] = [];
+  #codersTree: AbiCodersTreeNode = new AbiCodersTreeNode(null, -1);
 
   // private constructor to prevent direct instantiation
   private constructor() {
@@ -28,6 +46,7 @@ export class AbiWordAccumulator {
     >();
     this.#coders = [];
     this.#contexts = [];
+    this.#codersTree = new AbiCodersTreeNode(null, -1);
   }
 
   static getInstance(): AbiWordAccumulator {
@@ -41,10 +60,16 @@ export class AbiWordAccumulator {
     const coderId = this.#coders.push(coder) - 1;
     const curContext = this.curContext();
     if (curContext === null) {
-      this.#contexts.push({ offset: 0, coderIds: [coderId] });
+      const node = new AbiCodersTreeNode(this.#codersTree, coderId);
+      this.#contexts.push({ offset: 0, coderNode: node, coderIds: [coderId] });
     } else {
+      const node = new AbiCodersTreeNode(curContext.coderNode, coderId);
       const newCoderIds = [...curContext.coderIds, coderId];
-      this.#contexts.push({ offset: curContext.offset, coderIds: newCoderIds });
+      this.#contexts.push({
+        offset: curContext.offset,
+        coderNode: node,
+        coderIds: newCoderIds,
+      });
     }
   }
 
@@ -86,6 +111,10 @@ export class AbiWordAccumulator {
 
   get coders(): Coder[] {
     return this.#coders;
+  }
+
+  get codersTree(): AbiCodersTreeNode {
+    return this.#codersTree;
   }
 
   get words(): AbiWordOffsetMap {

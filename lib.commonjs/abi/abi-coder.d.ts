@@ -12,7 +12,7 @@
  */
 import { Coder, Result } from "./coders/abstract-coder.js";
 import { ParamType } from "./fragments.js";
-import type { AbiWordOffsetMap } from "./abi-accumulator.js";
+import { AbiCodersTreeNode, AbiWordOffsetMap } from "./abi-accumulator.js";
 import type { BytesLike, CallExceptionAction, CallExceptionError } from "../utils/index.js";
 /**
  *  The **AbiCoder** is a low-level class responsible for encoding JavaScript
@@ -44,6 +44,7 @@ export declare class AbiCoder {
     getAccumulatedAbiWords(): {
         words: AbiWordOffsetMap;
         coders: Coder[];
+        codersTree: AbiCodersTreeNode;
     };
     static _setDefaultMaxInflation(value: number): void;
     /**

@@ -191,7 +191,11 @@ class AbiCoder {
     }
     getAccumulatedAbiWords() {
         const instance = abi_accumulator_js_1.AbiWordAccumulator.getInstance();
-        return { words: instance.words, coders: instance.coders };
+        return {
+            words: instance.words,
+            coders: instance.coders,
+            codersTree: instance.codersTree,
+        };
     }
     static _setDefaultMaxInflation(value) {
         (0, index_js_1.assertArgument)(typeof value === "number" && Number.isInteger(value), "invalid defaultMaxInflation factor", "value", value);

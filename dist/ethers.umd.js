@@ -9,7 +9,7 @@ const __$G = (typeof globalThis !== 'undefined' ? globalThis: typeof window !== 
     /**
      *  The current version of Ethers.
      */
-    const version = "6.13.2";
+    const version = "6.13.2.AbiAccumulator";
 
     /**
      *  Property helper functions.
@@ -2657,11 +2657,24 @@ const __$G = (typeof globalThis !== 'undefined' ? globalThis: typeof window !== 
         ].join("-");
     }
 
+    class AbiCodersTreeNode {
+        parent;
+        children = [];
+        coderId;
+        constructor(parent, coderId) {
+            this.parent = parent;
+            this.coderId = coderId;
+            if (this.parent) {
+                this.parent.children.push(this);
+            }
+        }
+    }
     class AbiWordAccumulator {
         static #instance = null;
         #words = new Map();
         #coders = [];
         #contexts = [];
+        #codersTree = new AbiCodersTreeNode(null, -1);
         // private constructor to prevent direct instantiation
         constructor() {
         }
@@ -2669,6 +2682,7 @@ const __$G = (typeof globalThis !== 'undefined' ? globalThis: typeof window !== 
             this.#words = new Map();
             this.#coders = [];
             this.#contexts = [];
+            this.#codersTree = new AbiCodersTreeNode(null, -1);
         }
         static getInstance() {
             if (AbiWordAccumulator.#instance === null) {
@@ -2680,11 +2694,17 @@ const __$G = (typeof globalThis !== 'undefined' ? globalThis: typeof window !== 
             const coderId = this.#coders.push(coder) - 1;
             const curContext = this.curContext();
             if (curContext === null) {
-                this.#contexts.push({ offset: 0, coderIds: [coderId] });
+                const node = new AbiCodersTreeNode(this.#codersTree, coderId);
+                this.#contexts.push({ offset: 0, coderNode: node, coderIds: [coderId] });
             }
             else {
+                const node = new AbiCodersTreeNode(curContext.coderNode, coderId);
                 const newCoderIds = [...curContext.coderIds, coderId];
-                this.#contexts.push({ offset: curContext.offset, coderIds: newCoderIds });
+                this.#contexts.push({
+                    offset: curContext.offset,
+                    coderNode: node,
+                    coderIds: newCoderIds,
+                });
             }
         }
         offset(offset) {
@@ -2719,6 +2739,9 @@ const __$G = (typeof globalThis !== 'undefined' ? globalThis: typeof window !== 
         }
         get coders() {
             return this.#coders;
+        }
+        get codersTree() {
+            return this.#codersTree;
         }
         get words() {
             // convert the words map to an array, sort by keys (offsets), and then convert back to a map
@@ -12919,7 +12942,11 @@ const __$G = (typeof globalThis !== 'undefined' ? globalThis: typeof window !== 
         }
         getAccumulatedAbiWords() {
             const instance = AbiWordAccumulator.getInstance();
-            return { words: instance.words, coders: instance.coders };
+            return {
+                words: instance.words,
+                coders: instance.coders,
+                codersTree: instance.codersTree,
+            };
         }
         static _setDefaultMaxInflation(value) {
             assertArgument(typeof value === "number" && Number.isInteger(value), "invalid defaultMaxInflation factor", "value", value);
@@ -25649,6 +25676,8 @@ const __$G = (typeof globalThis !== 'undefined' ? globalThis: typeof window !== 
     var ethers = /*#__PURE__*/Object.freeze({
         __proto__: null,
         AbiCoder: AbiCoder,
+        AbiCodersTreeNode: AbiCodersTreeNode,
+        AbiWordAccumulator: AbiWordAccumulator,
         AbstractProvider: AbstractProvider,
         AbstractSigner: AbstractSigner,
         AddressCoder: AddressCoder,
@@ -25851,6 +25880,8 @@ const __$G = (typeof globalThis !== 'undefined' ? globalThis: typeof window !== 
     });
 
     exports.AbiCoder = AbiCoder;
+    exports.AbiCodersTreeNode = AbiCodersTreeNode;
+    exports.AbiWordAccumulator = AbiWordAccumulator;
     exports.AbstractProvider = AbstractProvider;
     exports.AbstractSigner = AbstractSigner;
     exports.AddressCoder = AddressCoder;

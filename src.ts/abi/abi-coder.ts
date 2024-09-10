@@ -27,8 +27,11 @@ import { StringCoder } from "./coders/string.js";
 import { TupleCoder } from "./coders/tuple.js";
 import { ParamType } from "./fragments.js";
 
-import { AbiWordAccumulator } from "./abi-accumulator.js";
-import type { AbiWordOffsetMap } from "./abi-accumulator.js";
+import {
+  AbiWordAccumulator,
+  AbiCodersTreeNode,
+  AbiWordOffsetMap,
+} from "./abi-accumulator.js";
 
 import { getAddress } from "../address/index.js";
 import { getBytes, hexlify, makeError } from "../utils/index.js";
@@ -253,9 +256,17 @@ export class AbiCoder {
     return coder.decode(new Reader(data, loose, defaultMaxInflation));
   }
 
-  getAccumulatedAbiWords(): { words: AbiWordOffsetMap; coders: Coder[] } {
+  getAccumulatedAbiWords(): {
+    words: AbiWordOffsetMap;
+    coders: Coder[];
+    codersTree: AbiCodersTreeNode;
+  } {
     const instance = AbiWordAccumulator.getInstance();
-    return { words: instance.words, coders: instance.coders };
+    return {
+      words: instance.words,
+      coders: instance.coders,
+      codersTree: instance.codersTree,
+    };
   }
 
   static _setDefaultMaxInflation(value: number): void {

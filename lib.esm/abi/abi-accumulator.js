@@ -1,8 +1,21 @@
+export class AbiCodersTreeNode {
+    parent;
+    children = [];
+    coderId;
+    constructor(parent, coderId) {
+        this.parent = parent;
+        this.coderId = coderId;
+        if (this.parent) {
+            this.parent.children.push(this);
+        }
+    }
+}
 class AbiWordAccumulator {
     static #instance = null;
     #words = new Map();
     #coders = [];
     #contexts = [];
+    #codersTree = new AbiCodersTreeNode(null, -1);
     // private constructor to prevent direct instantiation
     constructor() {
         this;
@@ -11,6 +24,7 @@ class AbiWordAccumulator {
         this.#words = new Map();
         this.#coders = [];
         this.#contexts = [];
+        this.#codersTree = new AbiCodersTreeNode(null, -1);
     }
     static getInstance() {
         if (AbiWordAccumulator.#instance === null) {
@@ -22,11 +36,17 @@ class AbiWordAccumulator {
         const coderId = this.#coders.push(coder) - 1;
         const curContext = this.curContext();
         if (curContext === null) {
-            this.#contexts.push({ offset: 0, coderIds: [coderId] });
+            const node = new AbiCodersTreeNode(this.#codersTree, coderId);
+            this.#contexts.push({ offset: 0, coderNode: node, coderIds: [coderId] });
         }
         else {
+            const node = new AbiCodersTreeNode(curContext.coderNode, coderId);
             const newCoderIds = [...curContext.coderIds, coderId];
-            this.#contexts.push({ offset: curContext.offset, coderIds: newCoderIds });
+            this.#contexts.push({
+                offset: curContext.offset,
+                coderNode: node,
+                coderIds: newCoderIds,
+            });
         }
     }
     offset(offset) {
@@ -61,6 +81,9 @@ class AbiWordAccumulator {
     }
     get coders() {
         return this.#coders;
+    }
+    get codersTree() {
+        return this.#codersTree;
     }
     get words() {
         // convert the words map to an array, sort by keys (offsets), and then convert back to a map

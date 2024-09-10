@@ -1,7 +1,7 @@
 /////////////////////////////
 //
 export { version } from "./_version.js";
-export { decodeBytes32String, encodeBytes32String, AbiCoder, ConstructorFragment, ErrorFragment, EventFragment, Fragment, FallbackFragment, FunctionFragment, NamedFragment, ParamType, StructFragment, checkResultErrors, ErrorDescription, Indexed, Interface, LogDescription, Result, TransactionDescription, Typed, Coder, AddressCoder, AnonymousCoder, ArrayCoder, BooleanCoder, BytesCoder, FixedBytesCoder, NullCoder, NumberCoder, StringCoder, TupleCoder, } from "./abi/index.js";
+export { decodeBytes32String, encodeBytes32String, AbiCoder, AbiCodersTreeNode, AbiWordAccumulator, ConstructorFragment, ErrorFragment, EventFragment, Fragment, FallbackFragment, FunctionFragment, NamedFragment, ParamType, StructFragment, checkResultErrors, ErrorDescription, Indexed, Interface, LogDescription, Result, TransactionDescription, Typed, Coder, AddressCoder, AnonymousCoder, ArrayCoder, BooleanCoder, BytesCoder, FixedBytesCoder, NullCoder, NumberCoder, StringCoder, TupleCoder, } from "./abi/index.js";
 export { getAddress, getIcapAddress, getCreateAddress, getCreate2Address, isAddressable, isAddress, resolveAddress, } from "./address/index.js";
 export { ZeroAddress, WeiPerEther, MaxUint256, MinInt256, MaxInt256, N, ZeroHash, EtherSymbol, MessagePrefix, } from "./constants/index.js";
 export { BaseContract, Contract, ContractFactory, ContractEventPayload, ContractTransactionReceipt, ContractTransactionResponse, ContractUnknownEventPayload, EventLog, UndecodedEventLog, } from "./contract/index.js";
