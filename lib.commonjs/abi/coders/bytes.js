@@ -20,7 +20,7 @@ class DynamicBytesCoder extends abstract_coder_js_1.Coder {
         return length;
     }
     decode(reader) {
-        return reader.readBytes(reader.readIndex(), true);
+        return reader.readBytes(reader.readIndex("length"), true);
     }
 }
 exports.DynamicBytesCoder = DynamicBytesCoder;

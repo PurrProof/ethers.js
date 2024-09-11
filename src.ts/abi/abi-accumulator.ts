@@ -16,7 +16,7 @@ export class AbiCodersTreeNode {
 
 export interface AbiWord {
   data: Uint8Array;
-  isIndex?: boolean;
+  role?: string;
   coders: number[];
 }
 
@@ -42,7 +42,7 @@ export class AbiWordAccumulator {
   clear(): void {
     this.#words = new Map<
       number,
-      { data: Uint8Array; isIndex: boolean; coders: [] }
+      { data: Uint8Array; role: string; coders: [] }
     >();
     this.#coders = [];
     this.#contexts = [];
@@ -95,14 +95,14 @@ export class AbiWordAccumulator {
     return context;
   }
 
-  upsertWord(offset: number, data: Uint8Array, isIndex?: boolean): void {
+  upsertWord(offset: number, data: Uint8Array, role?: string): void {
     const curContext = this.curContext();
     const newOffset = curContext ? curContext.offset + offset : offset;
     const coderIds = curContext ? curContext.coderIds : [];
 
     const word: AbiWord = {
       data,
-      isIndex: isIndex ?? this.#words.get(newOffset)?.isIndex,
+      role: role ?? this.#words.get(newOffset)?.role,
       coders: coderIds, // current context coders
     };
 

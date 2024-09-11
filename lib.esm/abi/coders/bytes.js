@@ -17,7 +17,7 @@ export class DynamicBytesCoder extends Coder {
         return length;
     }
     decode(reader) {
-        return reader.readBytes(reader.readIndex(), true);
+        return reader.readBytes(reader.readIndex("length"), true);
     }
 }
 /**

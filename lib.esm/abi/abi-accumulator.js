@@ -68,13 +68,13 @@ class AbiWordAccumulator {
         }
         return context;
     }
-    upsertWord(offset, data, isIndex) {
+    upsertWord(offset, data, role) {
         const curContext = this.curContext();
         const newOffset = curContext ? curContext.offset + offset : offset;
         const coderIds = curContext ? curContext.coderIds : [];
         const word = {
             data,
-            isIndex: isIndex ?? this.#words.get(newOffset)?.isIndex,
+            role: role ?? this.#words.get(newOffset)?.role,
             coders: coderIds, // current context coders
         };
         this.#words.set(newOffset, word);

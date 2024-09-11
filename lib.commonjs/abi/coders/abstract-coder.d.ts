@@ -119,6 +119,6 @@ export declare class Reader {
     subReader(offset: number): Reader;
     readBytes(length: number, loose?: boolean): Uint8Array;
     readValue(): bigint;
-    readIndex(): number;
+    readIndex(role: string): number;
 }
 //# sourceMappingURL=abstract-coder.d.ts.map

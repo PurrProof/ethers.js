@@ -7,7 +7,7 @@ export declare class AbiCodersTreeNode {
 }
 export interface AbiWord {
     data: Uint8Array;
-    isIndex?: boolean;
+    role?: string;
     coders: number[];
 }
 export type AbiWordOffsetMap = Map<number, AbiWord>;
@@ -25,7 +25,7 @@ export declare class AbiWordAccumulator {
     offset(offset: number): void;
     curContext(): AbiContext | null;
     popContext(): AbiContext;
-    upsertWord(offset: number, data: Uint8Array, isIndex?: boolean): void;
+    upsertWord(offset: number, data: Uint8Array, role?: string): void;
     get coders(): Coder[];
     get codersTree(): AbiCodersTreeNode;
     get words(): AbiWordOffsetMap;

@@ -2720,13 +2720,13 @@ class AbiWordAccumulator {
         }
         return context;
     }
-    upsertWord(offset, data, isIndex) {
+    upsertWord(offset, data, role) {
         const curContext = this.curContext();
         const newOffset = curContext ? curContext.offset + offset : offset;
         const coderIds = curContext ? curContext.coderIds : [];
         const word = {
             data,
-            isIndex: isIndex ?? this.#words.get(newOffset)?.isIndex,
+            role: role ?? this.#words.get(newOffset)?.role,
             coders: coderIds, // current context coders
         };
         this.#words.set(newOffset, word);
@@ -3232,9 +3232,9 @@ class Reader {
     readValue() {
         return toBigInt(this.readBytes(WordSize));
     }
-    readIndex() {
+    readIndex(role) {
         // insert empty word with index flag set to true
-        AbiWordAccumulator.getInstance().upsertWord(this.#offset, new Uint8Array(), true);
+        AbiWordAccumulator.getInstance().upsertWord(this.#offset, new Uint8Array(), role);
         return toNumber(this.readBytes(WordSize));
     }
 }
@@ -8266,7 +8266,7 @@ function unpack(reader, coders) {
         let value = null;
         AbiWordAccumulator.getInstance().pushContext(coder);
         if (coder.dynamic) {
-            let offset = reader.readIndex();
+            let offset = reader.readIndex("offset");
             let offsetReader = baseReader.subReader(offset);
             AbiWordAccumulator.getInstance().offset(offset);
             try {
@@ -8348,7 +8348,7 @@ class ArrayCoder extends Coder {
     decode(reader) {
         let count = this.length;
         if (count === -1) {
-            count = reader.readIndex();
+            count = reader.readIndex("count");
             // Check that there is *roughly* enough data to ensure
             // stray random data is not being read as a length. Each
             // slot requires at least 32 bytes for their value (or 32
@@ -8404,7 +8404,7 @@ class DynamicBytesCoder extends Coder {
         return length;
     }
     decode(reader) {
-        return reader.readBytes(reader.readIndex(), true);
+        return reader.readBytes(reader.readIndex("length"), true);
     }
 }
 /**

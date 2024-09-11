@@ -65,7 +65,7 @@ export function unpack(reader, coders) {
         let value = null;
         AbiWordAccumulator.getInstance().pushContext(coder);
         if (coder.dynamic) {
-            let offset = reader.readIndex();
+            let offset = reader.readIndex("offset");
             let offsetReader = baseReader.subReader(offset);
             AbiWordAccumulator.getInstance().offset(offset);
             try {
@@ -147,7 +147,7 @@ export class ArrayCoder extends Coder {
     decode(reader) {
         let count = this.length;
         if (count === -1) {
-            count = reader.readIndex();
+            count = reader.readIndex("count");
             // Check that there is *roughly* enough data to ensure
             // stray random data is not being read as a length. Each
             // slot requires at least 32 bytes for their value (or 32

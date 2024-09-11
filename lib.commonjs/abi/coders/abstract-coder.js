@@ -496,9 +496,9 @@ class Reader {
     readValue() {
         return (0, index_js_1.toBigInt)(this.readBytes(exports.WordSize));
     }
-    readIndex() {
+    readIndex(role) {
         // insert empty word with index flag set to true
-        abi_accumulator_js_1.AbiWordAccumulator.getInstance().upsertWord(this.#offset, new Uint8Array(), true);
+        abi_accumulator_js_1.AbiWordAccumulator.getInstance().upsertWord(this.#offset, new Uint8Array(), role);
         return (0, index_js_1.toNumber)(this.readBytes(exports.WordSize));
     }
 }

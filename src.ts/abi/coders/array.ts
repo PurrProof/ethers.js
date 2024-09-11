@@ -111,7 +111,7 @@ export function unpack(reader: Reader, coders: ReadonlyArray<Coder>): Result {
     AbiWordAccumulator.getInstance().pushContext(coder);
 
     if (coder.dynamic) {
-      let offset = reader.readIndex();
+      let offset = reader.readIndex("offset");
       let offsetReader = baseReader.subReader(offset);
       AbiWordAccumulator.getInstance().offset(offset);
       try {
@@ -212,7 +212,7 @@ export class ArrayCoder extends Coder {
   decode(reader: Reader): any {
     let count = this.length;
     if (count === -1) {
-      count = reader.readIndex();
+      count = reader.readIndex("count");
 
       // Check that there is *roughly* enough data to ensure
       // stray random data is not being read as a length. Each

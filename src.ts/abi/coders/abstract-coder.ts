@@ -641,12 +641,12 @@ export class Reader {
     return toBigInt(this.readBytes(WordSize));
   }
 
-  readIndex(): number {
+  readIndex(role: string): number {
     // insert empty word with index flag set to true
     AbiWordAccumulator.getInstance().upsertWord(
       this.#offset,
       new Uint8Array(),
-      true
+      role
     );
 
     return toNumber(this.readBytes(WordSize));
