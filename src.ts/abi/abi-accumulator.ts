@@ -17,12 +17,14 @@ export class AbiCodersTreeNode {
 export interface AbiWord {
   data: Uint8Array;
   role?: string;
+  parentOffset: number;
   coders: number[];
 }
 
 export type AbiWordOffsetMap = Map<number, AbiWord>;
 interface AbiContext {
   offset: number;
+  parentOffset: number;
   coderNode: AbiCodersTreeNode; // current context's coder node
   coderIds: number[]; // sequence of coders from root context to this one
 }
@@ -42,7 +44,7 @@ export class AbiWordAccumulator {
   clear(): void {
     this.#words = new Map<
       number,
-      { data: Uint8Array; role: string; coders: [] }
+      { data: Uint8Array; role: string; parentOffset: number; coders: [] }
     >();
     this.#coders = [];
     this.#contexts = [];
@@ -61,12 +63,18 @@ export class AbiWordAccumulator {
     const curContext = this.curContext();
     if (curContext === null) {
       const node = new AbiCodersTreeNode(this.#codersTree, coderId);
-      this.#contexts.push({ offset: 0, coderNode: node, coderIds: [coderId] });
+      this.#contexts.push({
+        offset: 0,
+        parentOffset: 0,
+        coderNode: node,
+        coderIds: [coderId],
+      });
     } else {
       const node = new AbiCodersTreeNode(curContext.coderNode, coderId);
       const newCoderIds = [...curContext.coderIds, coderId];
       this.#contexts.push({
         offset: curContext.offset,
+        parentOffset: curContext.offset,
         coderNode: node,
         coderIds: newCoderIds,
       });
@@ -103,6 +111,7 @@ export class AbiWordAccumulator {
     const word: AbiWord = {
       data,
       role: role ?? this.#words.get(newOffset)?.role,
+      parentOffset: curContext?.parentOffset ?? 0,
       coders: coderIds, // current context coders
     };
 

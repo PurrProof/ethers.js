@@ -37,13 +37,19 @@ class AbiWordAccumulator {
         const curContext = this.curContext();
         if (curContext === null) {
             const node = new AbiCodersTreeNode(this.#codersTree, coderId);
-            this.#contexts.push({ offset: 0, coderNode: node, coderIds: [coderId] });
+            this.#contexts.push({
+                offset: 0,
+                parentOffset: 0,
+                coderNode: node,
+                coderIds: [coderId],
+            });
         }
         else {
             const node = new AbiCodersTreeNode(curContext.coderNode, coderId);
             const newCoderIds = [...curContext.coderIds, coderId];
             this.#contexts.push({
                 offset: curContext.offset,
+                parentOffset: curContext.offset,
                 coderNode: node,
                 coderIds: newCoderIds,
             });
@@ -75,6 +81,7 @@ class AbiWordAccumulator {
         const word = {
             data,
             role: role ?? this.#words.get(newOffset)?.role,
+            parentOffset: curContext?.parentOffset ?? 0,
             coders: coderIds, // current context coders
         };
         this.#words.set(newOffset, word);

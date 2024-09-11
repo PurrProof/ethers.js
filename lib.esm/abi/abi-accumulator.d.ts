@@ -8,11 +8,13 @@ export declare class AbiCodersTreeNode {
 export interface AbiWord {
     data: Uint8Array;
     role?: string;
+    parentOffset: number;
     coders: number[];
 }
 export type AbiWordOffsetMap = Map<number, AbiWord>;
 interface AbiContext {
     offset: number;
+    parentOffset: number;
     coderNode: AbiCodersTreeNode;
     coderIds: number[];
 }
